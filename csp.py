@@ -139,7 +139,11 @@ class CSP:
         """
 
         # TODO: write this function
+        # Loops through empty cells, grid and self.numbers (try all options)
+        # Needs to be recursive? So fills numbers and calls search on that again? Etc.
         # Fill in the first cell
+        # Find all groups the filled cell is in and check group constraints?
+
         raise NotImplementedError()
     
 
