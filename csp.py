@@ -134,23 +134,28 @@ class CSP:
 
         :param empty_locations: list of empty locations that still need a value from self.numbers 
         """
-        # problem with this: time complexity is n^2?
+
+        new_locations = empty_locations
+        # if the list of empty location is empty, or the grid is full, check if it's a solution
+        if len(new_locations) == 0:
+            groups_to_check = []
+            for cell in empty_locations:
+                groups_to_check += (self.cell_to_groups[cell])
+            groups_to_check = list(set(groups_to_check))
+            if self.satisfies_group_constraints(groups_to_check):
+                return self.grid
 
         # loop through the empty locations
         for empty_cell in empty_locations:
-            # create a new list of empty locations excluding the one we're checking
-            new_locations = empty_locations
-            new_locations.remove(empty_cell)
-            # if the list of empty location is empty, or the grid is full, check if it's a solution
-            if len(new_locations) == 0:
-                # TODO add function to check solutions. Return the grid if true, else continue?
-                return self.grid
             # loop through all possible numbers
             for num in self.numbers:
                 # fill in grid with number
                 self.grid[empty_cell] = num
+                # create a new list of empty locations excluding the one we're checking
+                new_locations.remove(empty_cell)
                 # search the new grid with the new empty locations list
                 return self.search(new_locations)
+
         return None
 
     def start_search(self):
