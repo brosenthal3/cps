@@ -90,7 +90,6 @@ class CSP:
                                  This is None if there is no count constraint for the given group. 
         """
 
-        # TODO: write this function
         # Make new list (counts) of group with values instead of locations (find locations in grid)
 
         counts = []
@@ -116,7 +115,6 @@ class CSP:
         :param group_indices: The indices of the groups for which we check all of the constraints 
         """
 
-        # TODO: write this function
         # loop through group indices: for the relevant group:
         for i in group_indices:
             current_group = self.groups[i]
@@ -146,12 +144,13 @@ class CSP:
             # if the list of empty location is empty, or the grid is full, check if it's a solution
             if len(new_locations) == 0:
                 # TODO add function to check solutions. Return the grid if true, else continue?
+                return self.grid
             # loop through all possible numbers
             for num in self.numbers:
                 # fill in grid with number
                 self.grid[empty_cell] = num
                 # search the new grid with the new empty locations list
-                self.search(self, new_locations)
+                return self.search(new_locations)
         return None
 
     def start_search(self):
