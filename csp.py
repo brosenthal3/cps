@@ -125,7 +125,6 @@ class CSP:
                 return False
         return True
 
-
     def search(self, empty_locations: typing.List[typing.Tuple[int, int]]) -> np.ndarray:
         """
         Recursive exhaustive search function. It tries to fill in the empty_locations with permissible values
@@ -137,15 +136,23 @@ class CSP:
 
         :param empty_locations: list of empty locations that still need a value from self.numbers 
         """
+        # problem with this: time complexity is n^2?
 
-        # TODO: write this function
-        # Loops through empty cells, grid and self.numbers (try all options)
-        # Needs to be recursive? So fills numbers and calls search on that again? Etc.
-        # Fill in the first cell
-        # Find all groups the filled cell is in and check group constraints?
-
-        raise NotImplementedError()
-    
+        # loop through the empty locations
+        for empty_cell in empty_locations:
+            # create a new list of empty locations excluding the one we're checking
+            new_locations = empty_locations
+            new_locations.remove(empty_cell)
+            # if the list of empty location is empty, or the grid is full, check if it's a solution
+            if len(new_locations) == 0:
+                # TODO add function to check solutions. Return the grid if true, else continue?
+            # loop through all possible numbers
+            for num in self.numbers:
+                # fill in grid with number
+                self.grid[empty_cell] = num
+                # search the new grid with the new empty locations list
+                self.search(self, new_locations)
+        return None
 
     def start_search(self):
         """
