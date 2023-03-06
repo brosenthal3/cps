@@ -44,13 +44,10 @@ class CSP:
         in the __init__ function above (self.groups and self.cell_to_groups).
         """
 
-        # loop through dict
-            # for key (a, b): loop through groups list and check for each group if it is in it.
-                # If in group, add group index to list
-            # assign list to dict key
-
         for key in self.cell_to_groups:
+            # Check for each group if the current cell is in it.
             for i in range(0, len(self.groups)):
+                # If in group, add group index to list in the dictionary.
                 if key in self.groups[i]:
                     self.cell_to_groups[key].append(i)
 
@@ -66,17 +63,12 @@ class CSP:
                                sum up to this number. This is None if there is no sum constraint for the given group. 
         """
 
-        # loop through group
-            # find value of location in grid
-            # add up all values
-        # compare to sum constraint
         total_value = 0
+        # add up all values in group
         for location in group:
             total_value += self.grid[location]
-        if total_value > sum_constraint:
-            return False
-        else:
-            return True
+        # compare to sum constraint
+        return total_value <= sum_constraint
     
     def satisfies_count_constraint(self, group: typing.List[typing.Tuple[int,int]], count_constraint: int) -> bool:
         """
@@ -90,17 +82,14 @@ class CSP:
                                  This is None if there is no count constraint for the given group. 
         """
 
-        # Make new list (counts) of group with values instead of locations (find locations in grid)
-
-        counts = []
+        # Make new list of group with values instead of locations (find locations in grid)
+        locations_to_values = []
         for location in group:
-            counts.append(self.grid[location])
-        # Make list (values) of values in group where they all appear only once, not including 0
-        values = list(dict.fromkeys(counts))
-        # loop through values:
-        for v in values:
-            # count how often the value appears in counts
-            rep = counts.count(v)
+            locations_to_values.append(self.grid[location])
+        # loop through all possible numbers that can appear as values
+        for v in self.numbers:
+            # count how often the value appears in the group
+            rep = locations_to_values.count(v)
             # check constraint
             if rep > count_constraint:
                 return False
@@ -115,10 +104,11 @@ class CSP:
         :param group_indices: The indices of the groups for which we check all of the constraints 
         """
 
-        # loop through group indices: for the relevant group:
         for i in group_indices:
             current_group = self.groups[i]
+            # unpack constraints for the current croup
             sum_constraint, count_constraint = self.constraints[i]
+            # check for both conditions, immediately return false if any condition for any group fails
             if not self.satisfies_sum_constraint(current_group, sum_constraint) or not self.satisfies_count_constraint(current_group, count_constraint):
                 return False
         return True
@@ -134,6 +124,9 @@ class CSP:
 
         :param empty_locations: list of empty locations that still need a value from self.numbers 
         """
+
+        # possible solution: pass a grid as argument, so that each time the filled grid is given as argument. Wont work!
+        # alternative approach: make recursive filling function inside this function! That can take grid as argument. Not elegant, prob not what they're looking for...
 
         new_locations = empty_locations
         # if the list of empty location is empty, or the grid is full, check if it's a solution
