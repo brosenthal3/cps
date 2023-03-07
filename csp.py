@@ -113,43 +113,56 @@ class CSP:
                 return False
         return True
 
-    def search(self, empty_locations: typing.List[typing.Tuple[int, int]]) -> np.ndarray:
+    def search(self, empty_locations: typing.List[typing.Tuple[int, int]], grid=None) -> np.ndarray:
         """
         Recursive exhaustive search function. It tries to fill in the empty_locations with permissible values
         in an attempt to find a valid solution that does not violate any of the constraints. Instead of checking all
-        possible constraints after filling in a number, it checks only the relevant group constraints using the 
-        self.cell_to_groups data structure. 
+        possible constraints after filling in a number, it checks only the relevant group constraints using the
+        self.cell_to_groups data structure.
 
         Returns None if there is no solution. Returns the filled in solution (self.grid) otherwise if a solution is found.
 
-        :param empty_locations: list of empty locations that still need a value from self.numbers 
+        :param empty_locations: list of empty locations that still need a value from self.numbers
         """
 
         # possible solution: pass a grid as argument, so that each time the filled grid is given as argument. Wont work!
         # alternative approach: make recursive filling function inside this function! That can take grid as argument. Not elegant, prob not what they're looking for...
 
-        new_locations = empty_locations
+        #new_locations = empty_locations
+        if grid == None:
+            grid = self.grid
         # if the list of empty location is empty, or the grid is full, check if it's a solution
-        if len(new_locations) == 0:
+        if np.count_nonzero(grid == 0) == 0:
             groups_to_check = []
             for cell in empty_locations:
                 groups_to_check += (self.cell_to_groups[cell])
             groups_to_check = list(set(groups_to_check))
-            if self.satisfies_group_constraints(groups_to_check):
-                return self.grid
+            print("checking the following groups: ", groups_to_check)
+            if self.satisfies_group_constraints(list(range(len(self.groups)))):
+                print('All constraints apply! Returning the grid.')
+                return grid
+            else:
+                print("Constraints do not apply")
+                return None
 
         # loop through the empty locations
         for empty_cell in empty_locations:
+            # check whether empty cell is actually empty:
+
+            if grid[empty_cell] != 0:
+               continue
+
             # loop through all possible numbers
             for num in self.numbers:
                 # fill in grid with number
-                self.grid[empty_cell] = num
-                # create a new list of empty locations excluding the one we're checking
-                new_locations.remove(empty_cell)
+                print("filing in ", empty_cell, ' with ', num)
+                grid[empty_cell] = num
                 # search the new grid with the new empty locations list
-                return self.search(new_locations)
+                if self.search(empty_locations):
+                    return grid
+                else:
+                    continue
 
-        return None
 
     def start_search(self):
         """
