@@ -122,21 +122,19 @@ class CSP:
 
         Returns None if there is no solution. Returns the filled in solution (self.grid) otherwise if a solution is found.
 
+        :param grid: the slightly/fully filled in grid passed through the function recursively. Initially copy of self.grid
         :param empty_locations: list of empty locations that still need a value from self.numbers
         """
 
-        # possible solution: pass a grid as argument, so that each time the filled grid is given as argument. Wont work!
-        # alternative approach: make recursive filling function inside this function! That can take grid as argument. Not elegant, prob not what they're looking for...
-
-        #new_locations = empty_locations
-        if grid == None:
+        # assign grid variable if this is the initial call of the function
+        if grid is None:
             grid = self.grid
         # if the list of empty location is empty, or the grid is full, check if it's a solution
         if np.count_nonzero(grid == 0) == 0:
-            groups_to_check = []
-            for cell in empty_locations:
-                groups_to_check += (self.cell_to_groups[cell])
-            groups_to_check = list(set(groups_to_check))
+            #groups_to_check = []
+            #for cell in empty_locations:
+            #    groups_to_check += (self.cell_to_groups[cell])
+            groups_to_check = list(range(len(self.groups))) #list(set(groups_to_check))
             print("checking the following groups: ", groups_to_check)
             if self.satisfies_group_constraints(list(range(len(self.groups)))):
                 print('All constraints apply! Returning the grid.')
@@ -146,22 +144,28 @@ class CSP:
                 return None
 
         # loop through the empty locations
+
         for empty_cell in empty_locations:
-            # check whether empty cell is actually empty:
-
-            if grid[empty_cell] != 0:
-               continue
-
+            print("at cell:", empty_cell)
+            #if grid[empty_cell] != 0:
+            #    continue
             # loop through all possible numbers
             for num in self.numbers:
                 # fill in grid with number
-                print("filing in ", empty_cell, ' with ', num)
+                print("filling in ", empty_cell, ' with ', num)
                 grid[empty_cell] = num
+                print(grid)
+                new_empty_locations = empty_locations
+                if empty_cell in new_empty_locations:
+                    new_empty_locations.remove(empty_cell)
+                print("left over empty locations:", new_empty_locations)
                 # search the new grid with the new empty locations list
-                if self.search(empty_locations):
-                    return grid
-                else:
+                if self.search(new_empty_locations, grid) is None:
                     continue
+                else:
+                    return grid
+
+
 
 
     def start_search(self):
