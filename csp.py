@@ -113,7 +113,7 @@ class CSP:
                 return False
         return True
 
-    def search(self, empty_locations: typing.List[typing.Tuple[int, int]], grid=None) -> np.ndarray:
+    def search(self, empty_locations: typing.List[typing.Tuple[int, int]], grid=None, i=0) -> np.ndarray:
         """
         Recursive exhaustive search function. It tries to fill in the empty_locations with permissible values
         in an attempt to find a valid solution that does not violate any of the constraints. Instead of checking all
@@ -129,44 +129,32 @@ class CSP:
         # assign grid variable if this is the initial call of the function
         if grid is None:
             grid = self.grid
-        # if the list of empty location is empty, or the grid is full, check if it's a solution
-        if np.count_nonzero(grid == 0) == 0:
-            #groups_to_check = []
-            #for cell in empty_locations:
-            #    groups_to_check += (self.cell_to_groups[cell])
-            groups_to_check = list(range(len(self.groups))) #list(set(groups_to_check))
-            print("checking the following groups: ", groups_to_check)
-            if self.satisfies_group_constraints(list(range(len(self.groups)))):
-                print('All constraints apply! Returning the grid.')
+        # When the iterator reaches the final empty location, check constraints:
+        if i == len(empty_locations):
+            # find only the relevant groups
+            groups_to_check = []
+            for cell in empty_locations:
+                groups_to_check += (self.cell_to_groups[cell])
+            groups_to_check = list(range(len(self.groups)))
+            if self.satisfies_group_constraints(groups_to_check):
+                print('All constraints apply. Returning the grid.')
                 return grid
             else:
-                print("Constraints do not apply")
+                print("Constraints do not apply. Returning None")
                 return None
 
-        # loop through the empty locations
-
-        for empty_cell in empty_locations:
-            print("at cell:", empty_cell)
-            #if grid[empty_cell] != 0:
-            #    continue
-            # loop through all possible numbers
-            for num in self.numbers:
-                # fill in grid with number
-                print("filling in ", empty_cell, ' with ', num)
-                grid[empty_cell] = num
-                print(grid)
-                new_empty_locations = empty_locations
-                if empty_cell in new_empty_locations:
-                    new_empty_locations.remove(empty_cell)
-                print("left over empty locations:", new_empty_locations)
-                # search the new grid with the new empty locations list
-                if self.search(new_empty_locations, grid) is None:
-                    continue
-                else:
-                    return grid
-
-
-
+        # assign the current empty cell to a variable
+        empty_cell = empty_locations[i]
+        # loop through all possible numbers
+        for num in self.numbers:
+            # fill in grid with number
+            grid[empty_cell] = num
+            print(grid)
+            # search the new grid with the iterator incremented (so look at the next empty cell)
+            if self.search(empty_locations, grid, i+1) is None:
+                continue
+            else:
+                return grid
 
     def start_search(self):
         """
