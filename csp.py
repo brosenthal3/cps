@@ -110,7 +110,7 @@ class CSP:
                 return False
         return True
 
-    def search(self, empty_locations: typing.List[typing.Tuple[int, int]], grid=None, i=0) -> np.ndarray:
+    def search(self, empty_locations: typing.List[typing.Tuple[int, int]], grid=None, i: int = 0) -> np.ndarray:
         """
         Recursive exhaustive search function. It tries to fill in the empty_locations with permissible values
         in an attempt to find a valid solution that does not violate any of the constraints. Instead of checking all
@@ -119,8 +119,14 @@ class CSP:
 
         Returns None if there is no solution. Returns the filled in solution (self.grid) otherwise if a solution is found.
 
-        :param grid: the slightly/fully filled in grid passed through the function recursively. Initially copy of self.grid
-        :param empty_locations: list of empty locations that still need a value from self.numbers
+        Note: We decided to add two additional parameters: grid and i.
+        The grid parameter is used to make a local copy of the grid that is used in the recursion
+        The i is an iterator that is used in the recursion to loop through the empty locations list.
+        These parameters are both assigned a default value, for the first time that the function gets executed.
+
+        :param grid: the slightly/fully filled in grid passed through the function recursively. Initially copy of self.grid.
+        :param empty_locations: list of empty locations that still need a value from self.numbers.
+        :param i: iterator integer, used in recursion to iterate through the empty locations list.
         """
 
         # Preliminary operation: assign local grid variable if this is the initial call of the function
