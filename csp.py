@@ -83,14 +83,11 @@ class CSP:
         """
 
         # Make new list of group with values instead of locations (find locations in grid)
-        locations_to_values = []
-        for location in group:
-            locations_to_values.append(self.grid[location])
+        locations_to_values = [self.grid[location] for location in group]
         # loop through all possible numbers that can appear as values
         for v in self.numbers:
-            # count how often the value appears in the group
+            # count how often the value appears in the group and check constraint
             rep = locations_to_values.count(v)
-            # check constraint
             if rep > count_constraint:
                 return False
         # if loop finishes, then no False was returned, so automatically return True.
@@ -108,7 +105,7 @@ class CSP:
             current_group = self.groups[i]
             # unpack constraints for the current croup
             sum_constraint, count_constraint = self.constraints[i]
-            # check for both conditions, immediately return false if any condition for any group fails
+            # check for both conditions, return false if any condition for any group fails
             if not self.satisfies_sum_constraint(current_group, sum_constraint) or not self.satisfies_count_constraint(current_group, count_constraint):
                 return False
         return True
@@ -126,30 +123,28 @@ class CSP:
         :param empty_locations: list of empty locations that still need a value from self.numbers
         """
 
-        # assign grid variable if this is the initial call of the function
+        # Preliminary operation: assign local grid variable if this is the initial call of the function
         if grid is None:
             grid = self.grid
-        # When the iterator reaches the final empty location, check constraints:
+
+        # Base case: when the iterator reaches the final empty location, check constraints:
         if i == len(empty_locations):
             # find only the relevant groups
             groups_to_check = []
             for cell in empty_locations:
                 groups_to_check += (self.cell_to_groups[cell])
-            groups_to_check = list(range(len(self.groups)))
+            groups_to_check = list(dict.fromkeys(groups_to_check))
             if self.satisfies_group_constraints(groups_to_check):
-                print('All constraints apply. Returning the grid.')
                 return grid
             else:
-                print("Constraints do not apply. Returning None")
                 return None
 
         # assign the current empty cell to a variable
         empty_cell = empty_locations[i]
-        # loop through all possible numbers
+        # Recursive part: loop through all possible numbers
         for num in self.numbers:
             # fill in grid with number
             grid[empty_cell] = num
-            print(grid)
             # search the new grid with the iterator incremented (so look at the next empty cell)
             if self.search(empty_locations, grid, i+1) is None:
                 continue

@@ -201,5 +201,3 @@ class TestCSP(unittest.TestCase):
         csp = CSP(valid_grid, numbers=set([1,2]), groups=groups, constraints=constraints)
         result = csp.start_search()
         self.assertIsNone(result)
-
-
