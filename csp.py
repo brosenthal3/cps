@@ -110,7 +110,7 @@ class CSP:
                 return False
         return True
 
-    def search(self, empty_locations: typing.List[typing.Tuple[int, int]], grid=None, i: int = 0) -> np.ndarray:
+    def search(self, empty_locations: typing.List[typing.Tuple[int, int]], i: int = 0) -> np.ndarray:
         """
         Recursive exhaustive search function. It tries to fill in the empty_locations with permissible values
         in an attempt to find a valid solution that does not violate any of the constraints. Instead of checking all
@@ -119,19 +119,13 @@ class CSP:
 
         Returns None if there is no solution. Returns the filled in solution (self.grid) otherwise if a solution is found.
 
-        Note: We decided to add two additional parameters: grid and i.
-        The grid parameter is used to make a local copy of the grid that is used in the recursion
-        The i is an iterator that is used in the recursion to loop through the empty locations list.
+        Note: We decided to add an additional parameter: i.
+        i is an iterator that is used in the recursion to loop through the empty locations list.
         These parameters are both assigned a default value, for the first time that the function gets executed.
 
-        :param grid: the slightly/fully filled in grid passed through the function recursively. Initially copy of self.grid.
         :param empty_locations: list of empty locations that still need a value from self.numbers.
-        :param i: iterator integer, used in recursion to iterate through the empty locations list.
+        :param i: iterator integer, used recursively to iterate through the empty locations list.
         """
-
-        # Preliminary operation: assign local grid variable if this is the initial call of the function
-        if grid is None:
-            grid = self.grid
 
         # Base case: when the iterator reaches the final empty location, check constraints:
         if i == len(empty_locations):
@@ -141,21 +135,19 @@ class CSP:
                 groups_to_check += (self.cell_to_groups[cell])
             groups_to_check = list(dict.fromkeys(groups_to_check))
             if self.satisfies_group_constraints(groups_to_check):
-                return grid
+                return self.grid
             else:
                 return None
 
-        # assign the current empty cell to a variable
-        empty_cell = empty_locations[i]
         # Recursive part: loop through all possible numbers
         for num in self.numbers:
             # fill in grid with number
-            grid[empty_cell] = num
+            self.grid[empty_locations[i]] = num
             # search the new grid with the iterator incremented (so look at the next empty cell)
-            if self.search(empty_locations, grid, i+1) is None:
+            if self.search(empty_locations, i+1) is None:
                 continue
             else:
-                return grid
+                return self.grid
 
     def start_search(self):
         """
