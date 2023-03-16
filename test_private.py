@@ -27,4 +27,7 @@ def test_search():
         unittest.TestCase.assertTrue(np.all(solution_grid == result))
 
 
+<<<<<<< Updated upstream
 # concept search:
+=======
+>>>>>>> Stashed changes
