@@ -144,7 +144,6 @@ class CSP:
                 return None
 
         # loop through the empty locations
-
         for empty_cell in empty_locations:
             print("at cell:", empty_cell)
             #if grid[empty_cell] != 0:
