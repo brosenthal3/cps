@@ -201,4 +201,3 @@ class TestCSP(unittest.TestCase):
         result = csp.start_search()
         self.assertIsNone(result)
 
-
