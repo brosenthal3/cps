@@ -139,30 +139,6 @@ class CSP:
             else:
                 return None
 
-        # loop through the empty locations
-        for empty_cell in empty_locations:
-            print("at cell:", empty_cell)
-            #if grid[empty_cell] != 0:
-            #    continue
-            # loop through all possible numbers
-            for num in self.numbers:
-                # fill in grid with number
-                print("filling in ", empty_cell, ' with ', num)
-                grid[empty_cell] = num
-                print(grid)
-                new_empty_locations = empty_locations
-                if empty_cell in new_empty_locations:
-                    new_empty_locations.remove(empty_cell)
-                print("left over empty locations:", new_empty_locations)
-                # search the new grid with the new empty locations list
-                if self.search(new_empty_locations, grid) is None:
-                    continue
-                else:
-                    return grid
-
-
-
-=======
         # Recursive part: loop through all possible numbers
         for num in self.numbers:
             # fill in grid with number
