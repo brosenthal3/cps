@@ -43,14 +43,13 @@ class CSP:
         Before completing this function, make sure to read the assignment description and study the data structures created
         in the __init__ function above (self.groups and self.cell_to_groups).
         """
-
+        # For each key/cell in the grid
         for key in self.cell_to_groups:
-            # Check for each group if the current cell is in it.
+            # Check for each group
             for i in range(0, len(self.groups)):
                 # If in group, add group index to list in the dictionary.
                 if key in self.groups[i]:
                     self.cell_to_groups[key].append(i)
-
 
     def satisfies_sum_constraint(self, group: typing.List[typing.Tuple[int,int]], sum_constraint: int) -> bool:
         """
@@ -85,9 +84,9 @@ class CSP:
         # Make new list of group with values instead of locations (find locations in grid)
         locations_to_values = [self.grid[location] for location in group]
         # loop through all possible numbers that can appear as values
-        for v in self.numbers:
+        for n in self.numbers:
             # count how often the value appears in the group and check constraint
-            rep = locations_to_values.count(v)
+            rep = locations_to_values.count(n)
             if rep > count_constraint:
                 return False
         # if loop finishes, then no False was returned, so automatically return True.
@@ -121,19 +120,19 @@ class CSP:
 
         Note: We decided to add an additional parameter: i.
         i is an iterator that is used in the recursion to loop through the empty locations list.
-        These parameters are both assigned a default value, for the first time that the function gets executed.
 
         :param empty_locations: list of empty locations that still need a value from self.numbers.
         :param i: iterator integer, used recursively to iterate through the empty locations list.
         """
 
-        # Base case: when the iterator reaches the final empty location, check constraints:
+        # Base case: when the grid is filled, check constraints:
         if i == len(empty_locations):
             # find only the relevant groups
             groups_to_check = []
             for cell in empty_locations:
                 groups_to_check += (self.cell_to_groups[cell])
             groups_to_check = list(dict.fromkeys(groups_to_check))
+            # check constraints
             if self.satisfies_group_constraints(groups_to_check):
                 return self.grid
             else:
